@@ -9,7 +9,6 @@ pipeline {
                 echo "DockerHub user is $DOCKERHUB_CREDENTIALS_USR"
             }
         }
-    stages {
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t week7-pipeline .'
@@ -24,5 +23,5 @@ pipeline {
                 """
             }
         }
-    }
-}
+    }  // <-- closes stages
+}      // <-- closes pipeline
