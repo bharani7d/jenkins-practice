@@ -1,24 +1,21 @@
 pipeline {
     agent any
     environment {
-        DOCKERHUB_USER = credentials('dockerhub-user') // Jenkins credential ID
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-login')
     }
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: https://github.com/bharani7d/git-week7-practice.git
-            }
-        }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${DOCKERHUB_USER}/week7day2:latest .'
+                sh 'docker build -t week7-pipeline .'
             }
         }
-        stage('Push to Docker Hub') {
+        stage('Push to DockerHub') {
             steps {
-                withDockerRegistry([ credentialsId: 'dockerhub-user', url: '' ]) {
-                    sh 'docker push ${DOCKERHUB_USER}/week7day2:latest'
-                }
+                sh '''
+                  docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW
+                  docker tag week7-pipeline bharani7d/week7-pipeline:v1
+                  docker push bharani7d/week7-pipeline:v1
+                '''
             }
         }
     }
